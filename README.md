@@ -34,9 +34,13 @@ a collection of scripts to roll out Django projects localy:
 
 ### TODO:
 
+
+1. Unittests
 1. Add first app
 1. Add DRF
 1. Add bootstrap
 1. Dockerise 
     1. Add POSTGRE
     1. Redis
+
+### Tested on Django 5.1.4
