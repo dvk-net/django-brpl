@@ -3,11 +3,14 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-_project/
 
 # C extensions
 *.so
-
+###
+{% for line in params %}
+{{ line }}
+{% endfor %}
+###
 # Distribution / packaging
 .Python
 build/

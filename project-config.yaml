@@ -1,0 +1,32 @@
+project:
+  root_dir: '/home/<user>/<your_projects>/you_new_django_project/'
+  license:
+    generate: true
+    template_sub_folder: licenses
+    file: 'apache_2_0.jinja2'
+    params:
+      year: now
+      owner: dvk-net
+  gitignore:
+    generate: true
+    template_sub_folder: gitignore
+    file: 'python_gitignore.jinja2'
+    params:
+      - "_project"
+      - local_settings.py # to ignore locals
+  readme:
+    generate: true
+    template_sub_folder: readme
+    file: 'default.jinja2'
+    params:
+      READ_ME_TITLE: "test title"
+  django:
+    generate: true
+    template_sub_folder: django
+    project_folder_name: django # default is django. Folder within project_root
+    project_src_folder_name: src # django project's root folder (with manage.py)
+    packages:
+      - Django
+      - djangorestframework
+      - markdown
+      - django-filter
