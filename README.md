@@ -1,4 +1,4 @@
-# django-brpl - Django project boilerplater
+# django-brpl - New Django project with one command!
 
 a collection of scripts to roll out Django projects localy: 
 
