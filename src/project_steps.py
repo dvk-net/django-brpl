@@ -47,3 +47,20 @@ def start_django_project():
         secret = utils.extract_secret_from_settings(django_folder_path / django_src_folder / settings.DEFAULT_PROJECT_NAME)
         utils.save_text_to_file(django_folder_path / django_src_folder / settings.DEFAULT_PROJECT_NAME/ "local_settings.py", secret)
         utils.update_settings_file(django_folder_path / django_src_folder / settings.DEFAULT_PROJECT_NAME)
+
+def create_docker_images():
+    stages = project_config['project']['stages']
+    django_folder = project_config['project']['django'].get("project_folder_name", "django")
+    for stage in stages:
+        try:
+            config = project_config['project']['django']['docker'][stage]
+
+        except KeyError as e:
+            settings.logger.warning(f"{e} environment is missing in django/docker config in yaml.")
+            continue
+        file_dest=project_root / django_folder / f"Dockerfile.{stage}"
+        utils.create_file_from_template(
+            config=config,
+            file_dest=file_dest
+        )
+        settings.logger.info(f"Created Docker file {file_dest}")

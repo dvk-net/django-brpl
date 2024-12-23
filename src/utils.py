@@ -42,8 +42,8 @@ def create_file_from_template(config: dict, file_dest: Path):
             raise ValueError('file creation is activated but filename was not provided')
         context = {}
         context['params'] = config['params']
-        licence_text = render_jinja_template(template_file, context, template_sub_folder)
-        save_text_to_file(file_dest, licence_text)
+        rendered_tex = render_jinja_template(template_file, context, template_sub_folder)
+        save_text_to_file(file_dest, rendered_tex)
     else:
         settings.logging.warning("file creation is off")
 
