@@ -8,6 +8,13 @@ a collection of scripts to roll out Django projects localy:
     ```bash
     git clone https://github.com/dvk-net/django-brpl
     ```
+1. Create `venv` and install deps
+    ```bash
+    cd django-brpl
+    python3 -m venv env # create venv
+    . ./env/bin/activate  # activate venv
+    pip install -r ./requirements.txt
+    ```
 1. Adjust `project-config.yaml`
 1. CD into clonned repo's folder `src`
 1. run
