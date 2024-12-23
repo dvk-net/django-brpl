@@ -101,8 +101,8 @@ def update_settings_file(path_to_settings_folder):
     with open(path_to_settings_folder / "settings.py") as fp:
         for line in fp:
             if 'from pathlib import Path' in line:
-                settings_py += 'import local_settings\n' + line
-                settings.logging.info("adding 'import local_settings'")
+                settings_py += 'from . import local_settings\n' + line
+                settings.logging.info("adding 'from . import local_settings'")
             elif 'SECRET_KEY' in line:
                 settings_py += "SECRET_KEY = local_settings.SECRET_KEY\n"
                 settings.logging.info("adding 'SECRET_KEY = local_settings.SECRET_KEY'")
