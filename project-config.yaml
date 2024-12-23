@@ -1,5 +1,8 @@
 project:
-  root_dir: '/home/<user>/<your_projects>/you_new_django_project/'
+  stages:
+    - dev
+    - prod
+  root_dir: '/home/dennis/projects/django-tmp-proj/'
   license:
     generate: true
     template_sub_folder: licenses
@@ -30,3 +33,13 @@ project:
       - djangorestframework
       - markdown
       - django-filter
+    docker:
+      dev:
+        generate: true
+        template_sub_folder: django
+        file: 'Dockerfile.jinja2'
+        params:
+          python_version: 3.12 # FROM python:{{ python_version }}
+          django_dev_server_port: 8000
+    docker_compose:
+    
