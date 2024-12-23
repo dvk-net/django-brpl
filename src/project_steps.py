@@ -28,6 +28,10 @@ def create_project_root_structure():
     settings.logger.info("git repo is created")
 
 def start_django_project():
+    """Creates Django Project
+       Gets project.django yaml tree as config
+       generate flag must be `true` to generate django project
+    """
     config = project_config['project']['django']
     generate = config.get('generate')
     django_src_folder = config.get('project_src_folder_name', "src")

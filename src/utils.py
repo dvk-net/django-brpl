@@ -34,6 +34,18 @@ def render_jinja_template(template_file: str, context: dict, template_sub_folder
     return rendered_template
 
 def create_file_from_template(config: dict, file_dest: Path):
+    """Uses junja2 to create a file from a template
+
+    Args:
+        config (dict): a section in **project-config.yaml** file containing
+                generate (bool): if the section must be processed
+                template_sub_folder (str): subfolder in templates folder to look for the template
+                template_file (str): template file to be used in `template_sub_folder`
+        file_dest (Path): where to store the rendered file
+
+    Raises:
+        ValueError: if the template is missing
+    """
     generate = config.get('generate')
     if generate:
         template_sub_folder = config.get('template_sub_folder', "")
