@@ -1,5 +1,7 @@
 # django-brpl - New Django project with one command!
 
+[Documentation](https://dvk-net.github.io/django-brpl/)
+
 a collection of scripts to roll out Django projects localy: 
 
 ## How to use
