@@ -1,10 +1,9 @@
 import settings
-import subprocess
+import subprocess, shutil
 import venv, sys
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
-from yaml import load, Loader
 from typing import List
 
 
@@ -12,14 +11,23 @@ from typing import List
 def create_git_repo(repo_path):
     subprocess.run(['git', 'init', repo_path])
 
-def load_project_config() -> dict:
-    with open(settings.BASE_DIR.parent / "project-config.yaml") as fp:
-        project_config_yaml = fp.read()
-    return load(project_config_yaml, Loader=Loader)
+def delete_dir(dir_abs_path: str):
+    dir_path = Path(dir_abs_path)
+    try:
+        if dir_path.exists() and dir_path.is_dir():
+            shutil.rmtree(dir_path)
+            settings.logger.info(f"Directory {dir_path} has been deleted.")
+        else:
+            settings.logger.info(f"Directory {dir_path} does not exist.")
+    except Exception as e:
+        settings.logger.error(f"Error: {e}")
+
 
 def create_dir(dir_abs_path: str, parents: bool=True,  exist_ok: bool=True):
     path = Path(dir_abs_path)
     path.mkdir(parents=parents, exist_ok=exist_ok)
+    settings.logger.info(f"Directory {dir_abs_path} has been created.")
+
 
 def save_text_to_file(file_name, text):
     with open(file_name, 'w') as fp:
@@ -54,8 +62,8 @@ def create_file_from_template(config: dict, file_dest: Path):
             raise ValueError('file creation is activated but filename was not provided')
         context = {}
         context['params'] = config['params']
-        licence_text = render_jinja_template(template_file, context, template_sub_folder)
-        save_text_to_file(file_dest, licence_text)
+        rendered_tex = render_jinja_template(template_file, context, template_sub_folder)
+        save_text_to_file(file_dest, rendered_tex)
     else:
         settings.logging.warning("file creation is off")
 
@@ -109,19 +117,45 @@ def check_line_in_local_settings(path_to_settings, line) -> bool:
 
 
 def update_settings_file(path_to_settings_folder):
-    settings_py = ""
+    settings_py = []
     with open(path_to_settings_folder / "settings.py") as fp:
         for line in fp:
             if 'from pathlib import Path' in line:
-                settings_py += 'from . import local_settings\n' + line
+                settings_py.append('from . import local_settings\n')
+                settings_py.append(line)
                 settings.logging.info("adding 'from . import local_settings'")
             elif 'SECRET_KEY' in line:
-                settings_py += "SECRET_KEY = local_settings.SECRET_KEY\n"
+                settings_py.append("SECRET_KEY = local_settings.SECRET_KEY\n")
                 settings.logging.info("adding 'SECRET_KEY = local_settings.SECRET_KEY'")
                 check_line_in_local_settings(path_to_settings_folder, 'SECRET_KEY')
+            elif "STATIC_URL = 'static/'" in line:
+                settings_py.append("STATIC_URL = local_settings.STATIC_URL\n")
+                settings_py.append("STATIC_ROOT = local_settings.STATIC_ROOT\n")
+                settings_py.append("MEDIA_URL = local_settings.MEDIA_URL\n")
+                settings_py.append("MEDIA_ROOT = local_settings.MEDIA_ROOT\n")
             else:
-                settings_py += line
-    with open(path_to_settings_folder / "settings.py", "w") as fp:
-        fp.write(settings_py)
-        settings.logging.info("settings.py was updated")
+                settings_py.append(line)
+    save_text_to_file(path_to_settings_folder / "settings.py", "".join(settings_py))
 
+
+def update_local_settings_file(path_to_settings_folder, changes: dir):
+    try:
+        with open(path_to_settings_folder / "local_settings.py") as fp:
+            initial_settings = fp.readlines()
+    except FileNotFoundError:
+        initial_settings = []
+        settings.logging.info("file `initial_settings.py is missing and will be creted`")
+    for look_for, change_to in changes.items():
+        local_settings_py = []
+        found = False
+        for line in initial_settings:
+            if look_for in line:
+                local_settings_py.append(change_to + "\n")
+                found = True
+            else:
+                local_settings_py.append(line)
+        if not found:
+            local_settings_py.append(change_to + "\n")
+        initial_settings = None
+        initial_settings = local_settings_py
+    save_text_to_file(path_to_settings_folder / "local_settings.py", "".join(local_settings_py))

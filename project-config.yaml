@@ -2,7 +2,7 @@ project:
   stages:
     - dev
     - prod
-  root_dir: '/home/dennis/projects/django-tmp-proj/'
+  root_dir: '/home/dennis/projects/tagebuch/'
   license:
     generate: true
     template_sub_folder: licenses
@@ -15,8 +15,9 @@ project:
     template_sub_folder: gitignore
     file: 'python_gitignore.jinja2'
     params:
-      - "_project"
+      - _project
       - local_settings.py # to ignore locals
+      - storage/  # dev local storage
   readme:
     generate: true
     template_sub_folder: readme
@@ -41,5 +42,12 @@ project:
         params:
           python_version: 3.12 # FROM python:{{ python_version }}
           django_dev_server_port: 8000
-    docker_compose:
-    
+  compose:
+    dev:
+      generate: true
+      template_sub_folder: compose
+      file: 'compose.jinja2'
+      params:
+        HOST_PORT: 8081
+        CONTAINER_PORT: 8080
+        STAGE: dev

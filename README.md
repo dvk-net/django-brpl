@@ -1,8 +1,13 @@
 # django-brpl - New Django project with one command!
 
+# Not tested on Windows! 
 [Documentation](https://dvk-net.github.io/django-brpl/)
 
-a collection of scripts to roll out Django projects localy: 
+a collection of scripts to roll out Django projects localy:
+
+## Requirements:
+ - Docker, compose (actually optional if docker and compose sections have `generate: false`)
+ - Python3
 
 ## How to use
 
@@ -19,10 +24,16 @@ a collection of scripts to roll out Django projects localy:
     ```
 1. Adjust `project-config.yaml`
 1. CD into clonned repo's folder `src`
-1. run
+1. run to create a new Djungo project for local dev with docker
     ```python3
     python3 main.py
     ```
+1. CD to your brend new project and run
+    ```bash
+    docker compose -f ./compose.dev.yaml up
+    ```
+    It will build a container with your Django app, map your local src folder, storage/media, storage/statis into your running container
+1. Your app is ready for local development
 
 
 ### It will do the following:
@@ -40,6 +51,8 @@ a collection of scripts to roll out Django projects localy:
 1. Move `SECRET_KEY` into `local_settings.py`
 1. Add `local_settings.py` into `.gitignore`
 1. Adjust `settings.py` to use `SECRET_KEY` from `local_settings.py`
+1. Create Dockerfile.dev
+1. Create comp compose.dev.yaml
 
 ### TODO:
 

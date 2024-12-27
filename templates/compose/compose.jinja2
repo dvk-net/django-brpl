@@ -1,0 +1,22 @@
+services:
+
+  backend:
+    build:
+      context: ./django
+      dockerfile: Dockerfile.{{params.STAGE}}
+    restart: always
+    volumes:{% if params.STAGE == "dev" %}
+      - ./django/src:/usr/src/app/src
+      - ./storage/media:/var/www/media
+      - ./storage/static:/var/www/static
+{% endif %}
+    ports:
+      - "{{params.HOST_PORT}}:{{params.CONTAINER_PORT}}"
+    command:{% if params.STAGE == "dev" %}
+      [
+        "python3",
+        "./src/manage.py",
+        "runserver",
+        "0.0.0.0:{{ params.CONTAINER_PORT }}",
+        "--settings=proj.settings",
+      ]{% endif %}
